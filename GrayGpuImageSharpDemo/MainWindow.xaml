@@ -1,0 +1,43 @@
+﻿<Window x:Class="GrayGpuImageDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GrayGpuImageDemo"
+        mc:Ignorable="d"
+        Title="MainWindow" Width="450" Height="640" Background="Gray">
+        <DockPanel LastChildFill="True">
+		<Grid DockPanel.Dock="Bottom" Margin="8" HorizontalAlignment="Center">
+			<Grid.Resources>
+				<Style TargetType="Slider">
+					<Setter Property="Margin" Value="8 4 4 4"/>
+				</Style>
+				<Style TargetType="Label">
+					<Setter Property="VerticalAlignment" Value="Center"/>
+				</Style>
+				<Style TargetType="CheckBox">
+					<Setter Property="VerticalAlignment" Value="Center"/>
+				</Style>
+			</Grid.Resources>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="160"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<CheckBox x:Name="ThresholdCheckBox" Grid.Row="0" Checked="CheckBox_CheckChanged" Unchecked="CheckBox_CheckChanged">Threshold</CheckBox>
+			<Label Grid.Row="1">Gamma</Label>
+			<Label Grid.Row="2">Blur</Label>
+			<Label Grid.Row="3">Orientation</Label>
+			<Slider x:Name="ThresholdSlider" Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="1" Value="0.5" TickFrequency="0.5" TickPlacement="BottomRight" IsEnabled="{Binding IsChecked, ElementName=ThresholdCheckBox}" ValueChanged="Slider_ValueChanged"></Slider>
+			<Slider x:Name="GammaSlider" Grid.Row="1" Grid.Column="1" Minimum="0.5" Maximum="1.5" Value="1.0" TickFrequency="0.5" TickPlacement="BottomRight" ValueChanged="Slider_ValueChanged"></Slider>
+			<Slider x:Name="BlurSlider" Grid.Row="2" Grid.Column="1" Minimum="0.0" Maximum="20.0" Value="0.0" ValueChanged="Slider_ValueChanged"></Slider>
+			<Slider x:Name="OrientationSlider" Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="3" Value="0" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" ValueChanged="Slider_ValueChanged"></Slider>
+		</Grid>
+		<Image DockPanel.Dock="Top" x:Name="Image"></Image>
+	</DockPanel>
+</Window>

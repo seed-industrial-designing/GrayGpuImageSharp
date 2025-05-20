@@ -12,6 +12,12 @@ For Apple platforms, [GrayGpuImageMetal](https://github.com/seed-industrial-desi
 
 ## Examples
 
+### Demo App
+
+Demo app is included.
+
+![Screenshot of Demo App](screenshot.png)
+
 ### Applying filters
 
 In the following example, the function applies filters to `WriteableBitmap` of Gray8 pixel format.
