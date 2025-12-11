@@ -77,8 +77,10 @@ namespace GrayGpuImageDemo
 			using var gpuImage = OriginalGpuImage.Clone();
 			gpuImage.ApplyFilter(new LevelFilter(
 				blackLevel: 0.0,
-				gamma: GammaSlider.Value,
 				whiteLevel: 0.95
+			));
+			gpuImage.ApplyFilter(new GammaFilter(
+				gamma: GammaSlider.Value
 			));
 			gpuImage.ApplyFilter(new GaussianBlurFilter(
 				axis: GaussianBlurFilter.TAxis.X,

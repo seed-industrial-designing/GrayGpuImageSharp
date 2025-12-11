@@ -30,19 +30,16 @@ namespace GrayGpuImageSharp.Filters
 	public partial struct LevelFilter : IGrayGpuImageFilter<LevelFilter.Shader>
 	{
 		public double BlackLevel;
-		public double Gamma;
 		public double WhiteLevel;
-		public LevelFilter(double blackLevel = 0.0, double gamma = 1.0, double whiteLevel = 1.0)
+		public LevelFilter(double blackLevel = 0.0, double whiteLevel = 1.0)
 		{
 			BlackLevel = blackLevel;
-			Gamma = gamma;
 			WhiteLevel = whiteLevel;
 		}
 
 		public Shader MakeShader(ReadWriteTexture2D<float> input, ReadWriteTexture2D<float> output) => new(
 			input, output,
 			blackLevel: (float)BlackLevel,
-			gamma: (float)Gamma,
 			whiteLevel: (float)WhiteLevel
 		);
 
@@ -54,7 +51,6 @@ namespace GrayGpuImageSharp.Filters
 			public readonly ReadWriteTexture2D<float> input;
 			public readonly ReadWriteTexture2D<float> output;
 			public readonly float blackLevel;
-			public readonly float gamma;
 			public readonly float whiteLevel;
 
 			public void Execute()
@@ -64,7 +60,39 @@ namespace GrayGpuImageSharp.Filters
 				float value = input[x, y];
 				float result = ((value - blackLevel) / (whiteLevel - blackLevel));
 				result = Hlsl.Clamp(result, 0.0f, 1.0f);
-				result = Hlsl.Pow(result, (1.0f / gamma));
+				output[x, y] = result;
+			}
+		}
+	}
+	public partial struct GammaFilter : IGrayGpuImageFilter<GammaFilter.Shader>
+	{
+		public double Gamma;
+		public GammaFilter(double gamma = 1.0)
+		{
+			Gamma = gamma;
+		}
+
+		public Shader MakeShader(ReadWriteTexture2D<float> input, ReadWriteTexture2D<float> output) => new(
+			input, output,
+			gamma: (float)Gamma
+		);
+
+		[GeneratedComputeShaderDescriptor]
+		[ThreadGroupSize(DefaultThreadGroupSizes.XY)]
+		[AutoConstructor]
+		public readonly partial struct Shader : IComputeShader
+		{
+			public readonly ReadWriteTexture2D<float> input;
+			public readonly ReadWriteTexture2D<float> output;
+			public readonly float gamma;
+
+			public void Execute()
+			{
+				int x = ThreadIds.X;
+				int y = ThreadIds.Y;
+				float value = input[x, y];
+				float result = Hlsl.Pow(value, gamma);
+				result = Hlsl.Clamp(result, 0.0f, 1.0f);
 				output[x, y] = result;
 			}
 		}
