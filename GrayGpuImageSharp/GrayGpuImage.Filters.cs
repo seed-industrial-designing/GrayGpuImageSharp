@@ -252,4 +252,49 @@ namespace GrayGpuImageSharp.Filters
 			}
 		}
 	}
+
+	public partial struct FlipFilter : IGrayGpuImageFilter<FlipFilter.Shader>
+	{
+		public enum TAxis { X, Y }
+		public TAxis Axis;
+		public FlipFilter(TAxis axis)
+		{
+			Axis = axis;
+		}
+
+		public Shader MakeShader(ReadWriteTexture2D<float> input, ReadWriteTexture2D<float> output) => new(
+			input, output,
+			axis: Axis switch { TAxis.X => 0, _ => 1 }
+		);
+
+		[GeneratedComputeShaderDescriptor]
+		[ThreadGroupSize(DefaultThreadGroupSizes.XY)]
+		[AutoConstructor]
+		public readonly partial struct Shader : IComputeShader
+		{
+			public readonly ReadWriteTexture2D<float> input;
+			public readonly ReadWriteTexture2D<float> output;
+			public readonly int axis;
+
+			public void Execute()
+			{
+				var inputWidth = input.Width;
+				var inputHeight = input.Height;
+				int x = ThreadIds.X;
+				int y = ThreadIds.Y;
+				if ((ThreadIds.X >= inputWidth) || (ThreadIds.Y >= inputHeight)) { return; }
+				int2 inputCoord;
+				switch (axis) {
+					case 0:
+					default:
+						inputCoord = new((inputWidth - 1 - x), y);
+						break;
+					case 1:
+						inputCoord = new(x, (inputHeight - 1 - y));
+						break;
+				}
+				output[x, y] = input[inputCoord];
+			}
+		}
+	}
 }
