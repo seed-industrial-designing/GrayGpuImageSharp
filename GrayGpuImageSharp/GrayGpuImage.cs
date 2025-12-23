@@ -135,11 +135,11 @@ namespace GrayGpuImageSharp
 			}
 		}
 	}
-	public interface IGrayGpuImageGenerator<TShader> where TShader : struct, IComputeShader, IComputeShaderDescriptor<TShader>
+	public interface IGrayGpuImageGenerator<out TShader> where TShader : struct, IComputeShader, IComputeShaderDescriptor<TShader>
 	{
 		TShader MakeShader(ReadWriteTexture2D<float> output);
 	}
-	public interface IGrayGpuImageFilter<TShader> where TShader: struct, IComputeShader, IComputeShaderDescriptor<TShader>
+	public interface IGrayGpuImageFilter<out TShader> where TShader: struct, IComputeShader, IComputeShaderDescriptor<TShader>
 	{
 		TShader MakeShader(ReadWriteTexture2D<float> input, ReadWriteTexture2D<float> output);
 	}
